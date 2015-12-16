@@ -1,0 +1,13 @@
+title:             Exceptional Mirrors
+tagline:           'Tales from an abandonware dev e-loper'
+url:               http://mirrors.link
+baseurl:           ''
+permalink:         /posts/:title
+timezone:          'UTC'
+lsi:               true
+excerpt_separator: "<!--more-->"
+
+author:
+  name:       Rafał Cieślak
+
+exclude:      [lanyon-license.md, Gemfile, Gemfile.lock, CNAME]

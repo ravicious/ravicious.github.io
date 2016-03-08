@@ -11,3 +11,6 @@ author:
   name:       Rafał Cieślak
 
 exclude:      [lanyon-license.md, Gemfile, Gemfile.lock, CNAME]
+
+kramdown:
+  input: GFM

@@ -569,3 +569,11 @@ a.pagination-item:hover {
 .masthead {
   font-family: "Sorts Mill Goudy", "Times New Roman", Georgia, serif;
 }
+
+/* https://css-tricks.com/snippets/css/prevent-superscripts-and-subscripts-from-affecting-line-height/ */
+sup, sub {
+   vertical-align: baseline;
+   position: relative;
+   top: -0.4em;
+}
+sub { top: 0.4em; }

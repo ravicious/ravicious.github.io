@@ -30,6 +30,10 @@ Shout out to [Arek](http://twitter.com/aflinik) and [all the amazing people at E
 
 
 
+[Discuss on /r/rust](https://www.reddit.com/r/rust/comments/4aerrw/cross_compiling_rust_on_os_x_for_raspberry_pi_3/).
+
+
+
 ```shell
 $ docker run -v /Users/rav/Projects/rust/guessing_game:/home/cross/project rust-1.7.0-raspi build --release
 *** Extracting target dependencies ***

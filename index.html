@@ -15,6 +15,13 @@ title: Home
     <span class="post-date">{{ post.date | date_to_long_string }}</span>
 
     {{ post.excerpt }}
+
+    <p class="post-continue">
+      <a href="{{ site.baseurl }}{{ post.url }}">
+        Continue reading &rsaquo;
+      </a>
+    </p>
+    <hr/>
   </div>
   {% endfor %}
 </div>

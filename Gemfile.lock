@@ -6,7 +6,6 @@ GEM
     colorator (0.1)
     fast-stemmer (1.0.2)
     ffi (1.9.10)
-    gsl (1.16.0.6)
     jekyll (3.0.1)
       colorator (~> 0.1)
       jekyll-sass-converter (~> 1.0)
@@ -38,8 +37,7 @@ PLATFORMS
 
 DEPENDENCIES
   classifier-reborn (~> 2.0.4)
-  gsl (~> 1.16.0.6)
   jekyll (~> 3.0.0)
 
 BUNDLED WITH
-   1.10.6
+   1.13.2

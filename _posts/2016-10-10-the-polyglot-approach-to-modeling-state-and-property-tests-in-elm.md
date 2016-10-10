@@ -145,9 +145,9 @@ While Mark was happily strolling with the default FsCheck fuzzers, I had to impl
 
 ---
 
-I hope you're going to enjoy KataTennis as much as I did!
+I hope you're going to enjoy KataTennis as much as I did! If you wish to comment, here's a link to [discussion on /r/elm](https://www.reddit.com/r/elm/comments/56tyrk/the_polyglot_approach_to_getting_better_at/).
 
-Here's a&nbsp;list of the resources which were mentioned throughout this post.
+The resources which were mentioned throughout this post are as follows:
 
 * [Types + Properties = Software – Mark Seemann @ NDC London 2016](https://vimeo.com/162036084)
 * [Mark Seemann's _Types + Properties = Software_ series](http://blog.ploeh.dk/2016/02/10/types-properties-software/)
@@ -156,4 +156,3 @@ Here's a&nbsp;list of the resources which were mentioned throughout this post.
 * [elm-test](http://package.elm-lang.org/packages/elm-community/elm-test/2.1.0)
 * [Testing the Hard Stuff and Staying Sane – John Hughes @ Clojure/West 2014](https://www.youtube.com/watch?v=zi0rHwfiX1Q)
 * [My solution to KataTennis written in Elm](https://github.com/ravicious/kata-tennis)
-

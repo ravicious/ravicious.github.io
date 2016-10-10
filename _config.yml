@@ -4,7 +4,6 @@ url:               http://mirrors.link
 baseurl:           ''
 permalink:         /posts/:title
 timezone:          'UTC'
-lsi:               true
 excerpt_separator: "<!--more-->"
 
 author:

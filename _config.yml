@@ -8,7 +8,8 @@ excerpt_separator: "<!--more-->"
 future:            true
 
 author:
-  name:       Rafał Cieślak
+  name:           Rafał Cieślak
+  twitter_handle: Ravicious
 
 exclude:      [lanyon-license.md, Gemfile, Gemfile.lock, CNAME]
 

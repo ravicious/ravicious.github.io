@@ -5,6 +5,7 @@ baseurl:           ''
 permalink:         /posts/:title
 timezone:          'UTC'
 excerpt_separator: "<!--more-->"
+future:            true
 
 author:
   name:       Rafał Cieślak

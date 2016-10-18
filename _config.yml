@@ -15,3 +15,6 @@ exclude:      [lanyon-license.md, Gemfile, Gemfile.lock, CNAME]
 
 kramdown:
   input: GFM
+
+gems:
+  - jekyll-sitemap

@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
   <title>
-    {% if page.title == "Home" %}
+    {% if page.layout == "default" %}
       {{ site.title }} &middot; {{ site.tagline }}
     {% else %}
       {{ page.title }} &middot; {{ site.title }}
@@ -67,4 +67,6 @@
     ga('send', 'pageview');
 
   </script>
+
+  {% seo title=false %}
 </head>

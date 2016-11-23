@@ -6,6 +6,9 @@ permalink:         /posts/:title
 timezone:          'UTC'
 excerpt_separator: "<!--more-->"
 future:            true
+# I use the pagination not for the actual pagination, but for taking care of hiding
+# posts with `hidden: true` in the front matter, so I set this value arbitrarily high.
+paginate:          100
 
 author:
   name:           Rafał Cieślak

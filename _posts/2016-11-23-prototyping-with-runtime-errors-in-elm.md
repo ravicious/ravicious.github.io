@@ -8,7 +8,7 @@ While I was listening to [The Changelog podcast episode #198](https://changelog.
 
 > Contrary to popular belief, the Haskell type system has some escape hatches. For example, you can put an error value in the definition of a function if you wanna say it has a type but you don't have time to implement it right now.
 >
-<!--more-->
+> <!--more-->
 > This turns out to be a really powerful technique, because it means that I can work in terms of types alone without having written the code or implemented any of the functions and then test combining the functions together without executing them, just seeing, just asking my REPL what type would it be if I composed functions `f`, `g`, and `h` – given that I've only defined their types, I haven't implemented them, evaluating them would produce a runtime error – tell me what happens. And then I can figure out if I'm figuring out the right design or a combination of functions that achieves what I want before I've done any real work.
 >
 > (…)
@@ -19,28 +19,28 @@ While I was listening to [The Changelog podcast episode #198](https://changelog.
 Chris most probably meant something like this:
 
 ```haskell
-foo :: Bool -> a
+foo :: String -> [String]
 foo = error "Oh hai!"
 
-bar :: [a] -> [a]
+bar :: [String] -> [String]
 bar = error "Nope."
 ```
 
-`foo` and `bar` have their type signatures written out, but instead of having an actual implementation, they raise a runtime error. Then these functions can be used with other functions, for example in the repl. I'll show it in a second, but first let's see how we would implement something like that in Elm.
+`foo` and `bar` have their type signatures written out, but instead of having an actual implementation, they raise a runtime error. These functions can be then used with other functions, for example in the repl. I'll show it in a second, but first let's see how we would implement something like that in Elm.
 
 As for the first approach, we're going to directly translate Haskell to Elm. Instead of `error`, we're going to use [`Debug.crash`](http://package.elm-lang.org/packages/elm-lang/core/5.0.0/Debug#crash).
 
 ```haskell
-foo : Bool -> a
+foo : String -> List String
 foo = Debug.crash "Oh hai!"
 
-bar : List a -> List a
+bar : List String -> List String
 bar = Debug.crash "Nope."
 ```
 
 This code does compile, but if we try to include it in the repl…[^1]
 
-[^1]: If you wish to load this snippet into the repl, you need to put it into a module first. The easiest way to do that is to put `module Main exposing (..)` as the first line of the file, add the snippet and save the file as `Main.elm`.
+[^1]: If you wish to load this snippet into the repl, you need to put it into a module first. The easiest way to do that is to put `module Main exposing (..)` as the first line of the file, add the function definitions and save the file as `Main.elm`.
 
 ```haskell
 > import Main exposing (..)
@@ -54,27 +54,31 @@ The message provided by the code author is:
     Nope.
 ```
 
-Well, this is not good. To fix this, we need to add an argument to the definitions of the functions. I'll explain why it helps in a second.
+Well, this is not good. To fix this, we need to add an argument to the definitions of the functions. This will stop Elm from immediately evaluating the right side of the function definition (and crashing our program).[^2]
+
+[^2]: To get a better grasp of it, write down two versions of that function—one with an argument on the left side of the equation and one without it—and compile them with `elm make Main.elm --output main.js`. Then open the JS file and see how their implementations differ.
 
 ```haskell
-foo : Bool -> a
+foo : String -> List String
 foo x = Debug.crash "Oh hai!"
 
-bar : List a -> List a
+bar : List String -> List String
 bar x = Debug.crash "Nope."
 ```
 
-Now we should be able to import the module, try to compose some functions and get some feedback from the repl and the compiler.
+Now we should be able to import the module, compose some functions and get some feedback from the repl and the compiler.
 
 ```haskell
 > import Main exposing (..)
 > baz = foo >> bar
-<function:_user$project$Repl$baz> : Bool -> List a
+<function:_user$project$Repl$baz> : String -> List String
 ```
 
-This works without a problem, since we're trying to compose `foo : Bool -> a` with `bar : List a -> List a`. After doing the composition with [`>>`](http://package.elm-lang.org/packages/elm-lang/core/4.0.5/Basics#), Elm interprets `baz` as `baz : Bool -> List a`. The composition with `>>` is the equivalent of writing `baz x = bar (foo x)`. First we call `foo` with the argument `x` and then `bar` with the result of `foo x`.
+This works without a problem, since we're composing `foo : String -> List String` with `bar : List String -> List String`. After doing the composition with [`>>`](http://package.elm-lang.org/packages/elm-lang/core/4.0.5/Basics#), Elm interprets `baz` as `String -> List String`.
 
-And now the other way around:
+`baz = foo >> bar` is equivalent to `baz x = bar (foo x)`. When we call `baz`, Elm first calls `foo` with the argument `x` and then `bar` with the result of `foo x`.
+
+And now let's try the other way around:
 
 ```haskell
 > bux = bar >> foo
@@ -84,63 +88,21 @@ The right argument of (>>) is causing a type mismatch.
 
 4|       bar >> foo
                 ^^^
-(>>) is expecting the right argument to be a:
+(>>) is expecting the right side to be a:
 
-    List a -> b
+    List String -> c
 
-But the right argument is:
+But the right side is:
 
-    Bool -> a
+    String -> List String
 
-Hint: I always figure out the type of the left argument first and if it is acceptable on its own, I assume it is "correct" in subsequent checks. So the problem may actually be in how the left and right arguments interact.
+Hint: With operators like (>>) I always check the left side first. If it seems fine, I assume it is correct and check the right side. So the problem may be in how the left and right arguments interact.
 ```
 
-The second definition, `bux`, causes some problems. That's because we're trying to compose `bar : List a -> List a` with `foo : Bool -> a` and the type of the return value of `bar` (`List a`) doesn't match the type of the only argument of `foo` (`Bool`).
+The second definition, `bux`, causes some problems. That's because we're trying to compose `bar : List String -> List String` with `foo : String -> List String` and the type of the return value of `bar` (`List String`) doesn't match the type of the only argument of `foo` (`String`).
 
-Here lies the power of the technique described by Chris. Without writing the implementation for `foo` or `bar`, we were able to get some feedback from the Elm compiler and see if our ideas make sense in the grand scheme of things. To give you a "real world example", you could have a big `update` function in your Elm app and a plan to split it into smaller helpers. With this technique, you could check if the plan is going to pan out or if you forgot to take care of something.
+Here lies the power of this technique. **Without writing the implementation of `foo` and `bar`, we were able to get some feedback from the compiler and see if our ideas make sense in the grand scheme of things.** To give you a "real world example", you could have a big `update` function in your Elm app and a plan to split it into smaller helpers. You could then prototype with runtime errors and check if the plan is going to pan out or if you forgot about something.
 
 In general, this approach is a handy tool to have in your toolbox.
 
-## Elm is not lazy (but we can be)
-
-Why did it work in Haskell, but in Elm we had to add an argument? It has to do with [Haskell's laziness](https://www.explainxkcd.com/wiki/index.php/1312:_Haskell).
-
-Haskell is lazily evaluated, Elm is strictly evaluated. You may want to read [how Evan explains why Elm is not lazy](https://groups.google.com/forum/#!topic/elm-discuss/9XxV9L0zoA0). But you don't have to grok the whole laziness thing to understand why we had to add that extra argument. Let's look at the compiled source of these two functions: one that takes an argument and one that doesn't.
-
-```haskell
-withArgument : Bool -> a
-withArgument bool =
-    Debug.crash "Oh hai!"
-
-withoutArgument : Bool -> a
-withoutArgument =
-    Debug.crash "Oh hai!"
-```
-
-Putting this snippet into `Main.elm` and executing `elm make Main.elm --output main.js` in the console is going to output something like this in `main.js`:
-
-```javascript
-var _user$project$Main$withArgument = function (bool) {
-	return _elm_lang$core$Native_Utils.crash(
-		'Main',
-		{
-			start: {line: 6, column: 5},
-			end: {line: 6, column: 16}
-		})('Oh hai!');
-};
-
-var _user$project$Main$withoutArgument = _elm_lang$core$Native_Utils.crash(
-	'Main',
-	{
-		start: {line: 11, column: 5},
-		end: {line: 11, column: 16}
-	})('Oh hai!');
-```
-
-`withArgument` is a function which expects to receive a bool and then calls `Debug.crash`, while the definition of `withoutArgument` calls `Debug.crash` immediately.
-
-This becomes even more clear after we compile Main.elm as an HTML file (`elm make Main.elm`) and try to open it. The compiled JavaScript code is going to crash as soon as it encounters the definition of `withoutArgument`.
-
----
-
-If you enjoyed this article, take a look at [_Type Bombs in Elm_ by Kris Jenkins](http://blog.jenkster.com/2016/11/type-bombs-in-elm.html). It described an approach which is useful in an opposite situation – when you don't know the exact type and would like the compiler to tell you what it expects there.
+If you enjoyed this article, take a look at [_Type Bombs in Elm_ by Kris Jenkins](http://blog.jenkster.com/2016/11/type-bombs-in-elm.html). It describes an approach which is useful in an opposite situation – when you don't know the exact type and would like the compiler to tell you what it expects there.

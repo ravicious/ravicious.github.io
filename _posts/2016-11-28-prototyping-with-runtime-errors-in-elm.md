@@ -1,8 +1,6 @@
 ---
 layout: post
 title: Prototyping with Runtime Errors in&nbsp;Elm
-hidden: true
-sitemap: false
 ---
 While I was listening to [The Changelog podcast episode #198](https://changelog.com/podcast/198), I caught Chris Allen saying something along these lines:
 

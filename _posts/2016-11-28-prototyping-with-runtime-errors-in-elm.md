@@ -24,9 +24,9 @@ bar :: [String] -> [String]
 bar = error "Nope."
 ```
 
-`foo` and `bar` have their type signatures written out, but instead of having an actual implementation, they raise a runtime error. These functions can be then used with other functions, for example in the repl. I'll show it in a second, but first let's see how we would implement something like that in Elm.
+`foo` and `bar` have their type signatures written out, but instead of having an actual implementation, they raise a runtime error. Those functions can be then used with other functions, for example in the repl. I'll show it in a second, but first let's see how we would implement something like that in Elm.
 
-As for the first approach, we're going to directly translate Haskell to Elm. Instead of `error`, we're going to use [`Debug.crash`](http://package.elm-lang.org/packages/elm-lang/core/5.0.0/Debug#crash).
+As for the first approach, we're going to directly translate Haskell to Elm. Instead of `error` we're going to use [`Debug.crash`](http://package.elm-lang.org/packages/elm-lang/core/5.0.0/Debug#crash).
 
 ```haskell
 foo : String -> List String
@@ -64,7 +64,7 @@ bar : List String -> List String
 bar x = Debug.crash "Nope."
 ```
 
-Now we should be able to import the module, compose some functions and get some feedback from the repl and the compiler.
+Now we should be able to import the module, compose some functions and get feedback from the repl and the compiler.
 
 ```haskell
 > import Main exposing (..)
@@ -99,8 +99,6 @@ Hint: With operators like (>>) I always check the left side first. If it seems f
 
 The second definition, `bux`, causes some problems. That's because we're trying to compose `bar : List String -> List String` with `foo : String -> List String` and the type of the return value of `bar` (`List String`) doesn't match the type of the only argument of `foo` (`String`).
 
-Here lies the power of this technique. **Without writing the implementation of `foo` and `bar`, we were able to get some feedback from the compiler and see if our ideas make sense in the grand scheme of things.** To give you a "real world example", you could have a big `update` function in your Elm app and a plan to split it into smaller helpers. You could then prototype with runtime errors and check if the plan is going to pan out or if you forgot about something.
-
-In general, this approach is a handy tool to have in your toolbox.
+Here lies the power of this technique. **Without writing the implementation of `foo` and `bar`, we were able to get feedback from the compiler and see if our ideas make sense in the grand scheme of things.** To give you a real world example, you could have a big `update` function in your Elm app and a plan to split it into smaller helpers. You could then prototype with runtime errors and check if the plan is going to pan out or if you forgot about something. It's a handy tool to have in your toolbox.
 
 If you enjoyed this article, take a look at [_Type Bombs in Elm_ by Kris Jenkins](http://blog.jenkster.com/2016/11/type-bombs-in-elm.html). It describes an approach which is useful in an opposite situation – when you don't know the exact type and would like the compiler to tell you what it expects there.
